@@ -7,12 +7,16 @@
 </head>
 <body ng-app="my-app">
 <div ng-controller="MainController">
-        
-             <h2>{{ names.AD }}</h2>
-             <h2>{{ iso.AD }}</h2>
-             <h2>{{ capital.AD }}</h2>
-             <h2>{{ phone.AD }}</h2>
-             <h2>{{ currency.AD }}</h2>
+        <input type="text" ng-model="keyValue">
+        	<h2>{{keyValue}}</h2>
+        	<h2>{{key}}</h2>
+             <h2 ng-bind="names.{{key}}"> </h2>
+             <h2 ng-bind="iso.{{key}}"> </h2>
+             <h2 ng-bind="capital.{{key}}"> </h2>
+             <h2 ng-bind="phone.{{key}}"> </h2>
+             <h2 ng-bind="currency.{{key}}"> </h2>
+     
+          
 
 
         
