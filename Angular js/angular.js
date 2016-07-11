@@ -26,15 +26,3 @@ app.controller('MainController', function($scope, $http) {
     $http.get("http://country.io/currency.json").success(function(response) {$scope.currency = response; window.names1.push(response)});
 });
 
-
-var languageCodes = {
-  DA: 'Danish',
-  DE: 'German',
-  DZ: 'Bhutani',
-  EL: 'Greek',
-  EN: 'English',
-  EO: 'Esperanto',
-  ES: 'Spanish'
-};
-window.c=languageCodes;
-
