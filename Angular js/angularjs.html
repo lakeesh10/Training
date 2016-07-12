@@ -3,24 +3,22 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.js">  </script>   
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-route.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.js"></script>
-<script src="angular.js"></script>
+<script src="angularjs.js"></script>
+
 </head>
 <body ng-app="my-app">
 <div ng-controller="MainController">
-        <input type="text" ng-model="keyValue">
-        	<h2>{{keyValue}}</h2>
-        	<h2>{{key}}</h2>
-             <h2 ng-bind="names[key]"> </h2>
-             <h2 ng-bind="iso[key]"> </h2>
-             <h2 ng-bind="capital[key]"> </h2>
-             <h2 ng-bind="phone[key]"> </h2>
-             <h2 ng-bind="currency[key]"> </h2>
-     
-          
-
-
-        
+        <input type="text" ng-model="keyValue" id="search">
+        <ul>
+  		<li ng-repeat="x in countryData | filter : {names:keyValue}" >
+  		<div ng-click="changeData(x.names,'search');" >
+    		<a href="#/country/{{x.names}}">{{ x.names }}</a>
+    		</div>
+  		</li>
+		</ul>
+   
     </div>
+    <div ng-view></div>
 </div>
 </body>
 </html>
