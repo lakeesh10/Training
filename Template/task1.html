@@ -1,33 +1,65 @@
 <html>
 <head>
-<script src="task1.js"></script>
+
 <script src="handlebars-v4.0.5.js"></script>
 <script src="jquery.js"></script>
+<script src="task1.js"></script>
+
 <script id="generalscript" type="text/x-handlebars-template">
 {{#each form}}
-<lable>{{lable}}</lable>
-<input type="text" name="{{id}}" > 
-<br> <br>
+    <lable>{{lable}}</lable>
+    <input type="text" name="{{id}}" > 
+    <br> <br>
 {{/each}}
 </script>
+
+<script id="stable1" type="text/x-handlebars-template">
+{{#each .}}
+      <tr>
+      <td>{{name}}</td>
+      <td>{{email}}</td>
+      <td>{{mobile}}
+      <td>{{course}}</td>
+      <td><button id="{{rowid}}" onclick="updateS(this,'sform','studentTable');">Edit</button><button onclick="removeS(this,'studentTable');">Remove</button></td>
+      </tr>
+{{/each}}
+</script>
+
+<script id="etable1" type="text/x-handlebars-template">
+{{#each .}}
+      <tr>
+      <td>{{name}}</td>
+      <td>{{email}}</td>
+      <td>{{mobile}}
+      <td>{{salary}}</td>
+      <td><button id="{{rowid}}" onclick="updateS(this,'eform','employeeTable');">Edit</button><button onclick="removeS(this,'employeeTable');">Remove</button></td>
+      </tr>
+{{/each}}
+</script>
+
 <script id="sscript" type="text/x-handlebars-template">
-  <form id="sform" method="post">
+<form id="sform" method="post">
   <div class="generalscript"></div>
   {{{course}}}
-  </form>
-  <button id="addbutton" onclick="add('sform','studentTable')"> Add </button>   <button id="updatebutton"> Update </button> <br>
-  {{{stable}}}
-  
+</form>
+<button id="addbutton" onclick="add('sform','studentTable')"> Add </button>   <button id="updatebutton"> Update </button> <br>
+<table id="studentTable">
+  {{{stable}}}  
+</table>
 </script>
+
 <script id="escript" type="text/x-handlebars-template">
-  <form id="eform" method="post">
+<form id="eform" method="post">
   <div class="generalscript"></div>
   {{{salary}}}
-  </form>
-  <button id="addbutton" onclick="add('eform','employeeTable')"> Add </button>   <button id="updatebutton1"> Update </button> <br>
-  {{{etable}}}</script>
+</form>
+<button id="addbutton" onclick="add('eform','employeeTable')"> Add </button>   <button id="updatebutton"> Update </button> <br>
+<table id="employeeTable">
+  {{{etable}}}
+</table>
+</script>
 
-<script src="template.js"></script>
+
 <body onload="loadForm()">
 
 <select id="selectBox" onchange="mainFunc();">
@@ -39,7 +71,6 @@
 
 <div id="studentDiv", class="studentDiv">
 </div>
-<div id="employeeDiv", class="employeeDiv">
-</div>  
+ 
 </body>
 </html>

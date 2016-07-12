@@ -1,4 +1,3 @@
-
 var rowids=0;
 var inheritsFrom = function (child, parent) {
     child.prototype = Object.create(parent.prototype);
@@ -80,10 +79,10 @@ function searchRowid (rowid){
 }
 function loadForm(){
 	window.studs = [];
-	//addForm("sform", "studentTable", "studentDiv");
-	//addForm("eform","employeeTable","employeeDiv");
+	window.student = [];
+	window.employee = [];
 		$('#studentDiv').show();
-		$('#employeeDiv').hide();
+		
 
 
 }
@@ -91,23 +90,61 @@ function mainFunc() {
 	var selectBox = document.getElementById("selectBox");
 	var selectedValue= selectBox.options[selectBox.selectedIndex].value;
 	if (selectedValue.localeCompare("student")==0){
+
 		$('#studentDiv').show();
-		$('#employeeDiv').hide();
-		document.getElementById("addbutton").onclick=function(){updateval("sform", "studentTable")};
+		
+
+		var studentScript = $("#sscript").html();
+  		var studentTemplate = Handlebars.compile(studentScript);
+  		var studentContext={
+    	"course":"Course : <input type ='text' name='course'> <br>",
+    	"stable": "<tr><td>Name</td><td>Email</td><td>Mobile</td><td>Course</td><td>Options</td></tr>"
+  		};
+  		var src=$("#stable1").html();
+  		var template= Handlebars.compile(src)
+  		var studentCompile = studentTemplate(studentContext);
+	  	$('.studentDiv').html(studentCompile);
+		$("#studentTable").append( template(window.student) );
+		console.log(window.studs)
+		document.getElementById("addbutton").onclick=function(){add("sform", "studentTable")};
 	}
 	else{
-		$('#studentDiv').hide();
-		$('#employeeDiv').show();
-		document.getElementById("addbutton").onclick=function(){updateval("eform", "employeeTable")};
+		$('#studentDiv').show();
+		
+
+		var employeeScript = $("#escript").html();
+  		var employeeTemplate = Handlebars.compile(employeeScript);
+  		var employeeContext={
+    	"salary":"Salary : <input type ='text' name='salary'> <br>",
+    	"etable": "<tr><td>Name</td><td>Email</td><td>Mobile</td><td>Salary</td><td>Options</td></tr>"
+  		};
+  		var src=$("#etable1").html();
+  		var template= Handlebars.compile(src)
+  		var employeeCompile = employeeTemplate(employeeContext);
+	  	$('.studentDiv').html(employeeCompile);
+		$("#employeeTable").append( template(window.employee) );
+		console.log(window.studs)
+		document.getElementById("addbutton").onclick=function(){add("eform", "employeeTable")};
 	}
+	var generalScript = $("#generalscript").html();
+  	var generalTemplate = Handlebars.compile(generalScript);
+  	var generalcontext={
+    "form":[
+  	  {lable : "Your Name : ",id : "name" },
+  	  {lable : "Your Email :", id : "email"},
+  	  {lable : "Your Mobile", id :"mobile"}]
+  	  };
+			
+	  		var generalCompile = generalTemplate(generalcontext);
+	  		$('.generalscript').html(generalCompile);
 		
 }
 function removeS(e, tablename) {
 	var i = e.parentNode.parentNode.rowIndex;
     $('#'+tablename).find('tr:eq('+i+')').remove();
     $("#updatebutton").hide();
-    var object = searchRowid(e.id);
-    object.status="inactive";
+    //var object = searchRowid(e.id);
+    //object.status="inactive";
 
 }
 function updateS(e , formname, tablename) {
@@ -121,16 +158,9 @@ function updateS(e , formname, tablename) {
 	else
 		$('#'+formname).find('input')[3].value = object.salary;
     
-   /* $('#'+formname).find('input').each(function(index, val){
-    	if (index <4)
-    		val.value = $('#'+tablename).find(' tr:eq('+rowid+')').find(' td:eq('+index+')').html();
-    	
-    });
-	*/
-	
 	$('#updatebutton').show();
 	document.getElementById("updatebutton").onclick=function(){updateval(object,e, formname, tablename)};
-	document.getElementById("updatebutton1").onclick=function(){updateval(object,e, formname, tablename)};
+	//document.getElementById("updatebutton1").onclick=function(){updateval(object,e, formname, tablename)};
 }
 function updateval(object,rowid, formname, tablename) {
 	var e=rowid.parentNode.parentNode.rowIndex;
@@ -180,13 +210,21 @@ function add(formname, tablename ) {
 	var mobile= $('#'+formname).find('input')[2].value;
 	var course= $('#'+formname).find('input')[3].value;
 	var stud;
-	if (tablename.localeCompare("studentTable")==0)
+	if (tablename.localeCompare("studentTable")==0){
+		
 		stud = new Student(rowid,name,email,mobile,course);
-	else
+	}
+	else{
 		stud = new Employee(rowid,name,email,mobile,course)
+	
+	}
 	
 	
 	if(stud.validate()){
+		if (tablename.localeCompare("studentTable")==0)
+			window.student.push(stud);
+		else
+			window.employee.push(stud);
 		stud.save(stud);
 		rowids=rowids + 1;
 		var table = document.getElementById(tablename);
@@ -209,73 +247,6 @@ function add(formname, tablename ) {
   
 		cell5.appendChild(btn1); 
 	}
-
-}
-
-function addForm(formname, tablename, divname){
-	var f = document.createElement("form");
-	f.id=formname;
-	f.setAttribute('method',"post");
-	if (tablename.localeCompare("studentTable")==0)
-		details=[["Your Name : ","student_name"],["Your Email : ","student_email"],["Your Mobile : ","student_mobile"],["Course : ","student_course"]];
-	else
-		details=[["Your Name : ","employee_name"],["Your Email : ","employee_email"],["Your Mobile : ","employee_mobile"],["Salary : ","employee_salary"]];
-	
-	details.forEach(function(item){
-		var namelabel = document.createElement('label'); // Create Label for Name Field
-		namelabel.innerHTML = item[0]; // Set Field Labels
-		f.appendChild(namelabel);
-		var nameElement = document.createElement("input");
-		nameElement.type = "text";
-		nameElement.name = item[1];
-		nameElement.id = item[1];
-		f.appendChild(nameElement);
-
-		var linebreak = document.createElement('br');
-		f.appendChild(linebreak);
-		var linebreak = document.createElement('br');
-		f.appendChild(linebreak);
-	})
-
-	var linebreak = document.createElement('br');
-	f.appendChild(linebreak);
-	var linebreak = document.createElement('br');
-	f.appendChild(linebreak);
-
-	var s = document.createElement("input");
-	s.type="button"
-	s.value = "Add";
-	s.id="addbtn"
-	s.onclick = function(){add(formname,tablename)};
-
-	f.appendChild(s);
-
-	var s1 = document.createElement("input");
-	s1.type="button"
-	s1.value = "Update";
-	s1.id="updatebutton"
-	
-
-	f.appendChild(s1)
-	var tab= document.createElement("table");
-	tab.id = tablename;
-	tab.style.width  = '100%';
-	tab.setAttribute('border', '1');
-	if (tablename.localeCompare("studentTable")==0)
-		var heading = ["Name","Email","Mobile","Course","Options"];
-	else
-		var heading = ["Name","Email","Mobile","Salary","Options"];
-	var tr = tab.insertRow();
-
-	for (var j = 0; j < 5; j++) {
-		var td = tr.insertCell();
-        td.appendChild(document.createTextNode(heading[j]));
-    }
-    
-	document.getElementById(divname).innerHTML="";
-	document.getElementById(divname).appendChild(f);
-	document.getElementById(divname).appendChild(tab);
-	$('#updatebutton').hide();
 
 }
 
