@@ -39,19 +39,22 @@ window.names1=[];
 window.country={};
 window.country1=[];
 window.click1=[];
-
-app.config(['$routeProvider',
-        function($routeProvider) {
-          console.log("hello")
-            $routeProvider.
-                    when('/country/:param', {
-                        template: " Country Name : {{data1.names}} <br> ISO :{{data1.iso}} <br>Capital :  {{data1.capital}} <br>Phone : {{data1.phone}} <br>Currency : {{data1.currency}}",
-                        controller: 'RouteController'
-                    });
+app.run(['$rootScope', function($root) {
+  $root.$on('$routeChangeStart', function(e, curr, prev) {
+    if (curr.$$route && curr.$$route.resolve) {
+      // Show a loading message until promises aren't resolved
+      $root.loadingView = true;
+    }
+  });
+  $root.$on('$routeChangeSuccess', function(e, curr, prev) {
+    // Hide loading message
+    $root.loadingView = false;
+  });
 }]);
 
+
 app.controller('MainController', function($scope, $http) {
-    $scope.keyValue="India";
+    
     $http.get("http://country.io/names.json").success(function(response) {$scope.names = response; window.names1.push(response); window.country=response; console.log("Names");
       $http.get("http://country.io/iso3.json").success(function(response) {$scope.iso= response; window.names1.push(response); console.log("iso");
         $http.get("http://country.io/capital.json").success(function(response) {$scope.capital = response; window.names1.push(response); console.log("Capital");
@@ -64,8 +67,12 @@ app.controller('MainController', function($scope, $http) {
                   var object= new countryObject(key,$scope.names[key],$scope.iso[key],$scope.capital[key],$scope.phone[key],$scope.currency[key]);
                   window.country1.push(object);
                   $scope.countryData.push(object);
+
+
               }
+
               console.log("currency")
+
             });
           });
         });
@@ -86,12 +93,44 @@ app.controller('MainController', function($scope, $http) {
     
     
 });
+app.config(['$routeProvider',
+        function($routeProvider) {
+          
+          console.log("hello")
+            $routeProvider.
+                    when('/country/:param', {
+                        template: " Country Name : {{data1.names}} <br> ISO :{{data1.iso}} <br>Capital :  {{data1.capital}} <br>Phone : {{data1.phone}} <br>Currency : {{data1.currency}}",
+                        controller: 'RouteController'
+                    }).
+                    otherwise({
+               redirectTo: '/country/:param'
+            });
+
+
+}]);
+window.count=0;
 app.controller("RouteController", function($scope, $routeParams) {
         console.log($routeParams.param);
         $scope.message=$routeParams.param;
         var object=findObject(country1,$routeParams.param);
         $scope.data1=object;
         window.click1.push($routeParams)
+        setTimeout(function() {
+        
+          console.log($routeParams.param);
+        var object=findObject(country1,$routeParams.param);
+        $scope.data1=object;
+        console.log($scope.data1);
+        if(window.count==0)
+        window.location.href = '#/country/'+$routeParams.param; 
+        window.count=1;
+        //var tpl = $compile(" Country Name : {{data1.names}} <br> ISO :{{data1.iso}} <br>Capital :  {{data1.capital}} <br>Phone : {{data1.phone}} <br>Currency : {{data1.currency}}",)scope)
+    },500);
+        
+
+        
+
 
     })
+
 
