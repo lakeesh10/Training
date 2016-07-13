@@ -86,12 +86,25 @@ app.controller('MainController', function($scope, $http) {
     
     
 });
-app.controller("RouteController", function($scope, $routeParams) {
-        console.log($routeParams.param);
-        $scope.message=$routeParams.param;
-        var object=findObject(country1,$routeParams.param);
-        $scope.data1=object;
-        window.click1.push($routeParams)
+app.controller("RouteController", function($scope, $routeParams,$http) {
+  $scope.keyValue="India";
+    $http.get("http://country.io/names.json").success(function(response) {
+      $http.get("http://country.io/iso3.json").success(function(response) {
+        $http.get("http://country.io/capital.json").success(function(response) {
+          $http.get("http://country.io/phone.json").success(function(response) {
+           $http.get("http://country.io/currency.json").success(function(response) {
+              console.log($routeParams.param);
+              $scope.message=$routeParams.param;
+              var object=findObject(country1,$routeParams.param);
+              $scope.data1=object;
+              window.click1.push($routeParams)
 
+              
+            });
+          });
+        });
+      });
+    }); 
+        
     })
 
